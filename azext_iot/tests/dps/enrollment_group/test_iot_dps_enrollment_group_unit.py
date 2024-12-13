@@ -97,6 +97,9 @@ class TestEnrollmentGroupCreate():
                                               allocation_policy='hashed',
                                               iot_hubs='hub1 hub2')),
         (generate_enrollment_group_create_req(certificate_path='myCert',
+                                              allocation_policy='hashed',
+                                              iot_hubs=['hub1', 'hub2'])),
+        (generate_enrollment_group_create_req(certificate_path='myCert',
                                               allocation_policy='geoLatency')),
         (generate_enrollment_group_create_req(certificate_path='myCert',
                                               allocation_policy='custom',
@@ -190,7 +193,9 @@ class TestEnrollmentGroupCreate():
                 assert body['customAllocationDefinition']['webhookUrl'] == req['webhook_url']
                 assert body['customAllocationDefinition']['apiVersion'] == req['api_version']
         if req['iot_hubs']:
-            assert body['iotHubs'] == req['iot_hubs'].split()
+            assert body['iotHubs'] == ((
+                req['iot_hubs'].split() if isinstance(req['iot_hubs'], str) else req['iot_hubs'])
+            )
         if req['edge_enabled']:
             assert body['capabilities']['iotEdge']
 
@@ -362,12 +367,14 @@ class TestEnrollmentGroupUpdate():
                                               webhook_url="https://www.test.test",
                                               api_version="2019-03-31")),
         (generate_enrollment_group_update_req(allocation_policy='hashed', iot_hubs='hub1 hub2')),
+        (generate_enrollment_group_update_req(allocation_policy='hashed', iot_hubs=['hub1', 'hub2'])),
         (generate_enrollment_group_update_req(allocation_policy='geoLatency')),
         (generate_enrollment_group_update_req(iot_hub_host_name='hub1')),
         (generate_enrollment_group_update_req(edge_enabled=True)),
         (generate_enrollment_group_update_req(edge_enabled=False))
     ])
-    def test_enrollment_group_update(self, serviceclient, fixture_cmd, req):
+    def test_enrollment_group_update(self, mocker, serviceclient, fixture_cmd, req):
+        mocker.patch("azext_iot.operations.dps._validate_allocation_policy_for_enrollment")
         subject.iot_dps_device_enrollment_group_update(
             cmd=fixture_cmd,
             enrollment_id=req['enrollment_id'],
@@ -445,7 +452,9 @@ class TestEnrollmentGroupUpdate():
                 assert body['customAllocationDefinition']['webhookUrl'] == req['webhook_url']
                 assert body['customAllocationDefinition']['apiVersion'] == req['api_version']
         if req['iot_hubs']:
-            assert body['iotHubs'] == req['iot_hubs'].split()
+            assert body['iotHubs'] == ((
+                req['iot_hubs'].split() if isinstance(req['iot_hubs'], str) else req['iot_hubs'])
+            )
         if req['edge_enabled'] is not None:
             assert body['capabilities']['iotEdge'] == req['edge_enabled']
 
@@ -627,7 +636,7 @@ class TestEnrollmentGroupDelete():
         mocked_response.add(
             method=responses.DELETE,
             url="https://{}/enrollmentGroups/{}".format(mock_dps_target['entity'], enrollment_id),
-            body='{}',
+            body=None,
             status=request.param,
             content_type="application/json",
             match_querystring=False,
@@ -712,25 +721,82 @@ class TestRegistrationList():
         mocked_response.add(
             method=responses.POST,
             url="https://{}/registrations/{}/query?".format(mock_dps_target['entity'], enrollment_id),
-            body=json.dumps([generate_registration_state_show()]),
+            body=json.dumps([
+                generate_registration_state_show(),
+                generate_registration_state_show(),
+                generate_registration_state_show(),
+                generate_registration_state_show()
+            ]),
             status=request.param,
             content_type="application/json",
             match_querystring=False
         )
         yield mocked_response
 
-    def test_registration_list(self, serviceclient, fixture_cmd):
-        subject.iot_dps_registration_list(
+    @pytest.mark.parametrize("top", [None, 3])
+    def test_registration_list(self, serviceclient, fixture_cmd, top):
+        result = subject.iot_dps_registration_list(
             cmd=fixture_cmd,
             dps_name=mock_dps_target['entity'],
             enrollment_id=enrollment_id,
             resource_group_name=resource_group,
+            top=top
         )
         request = serviceclient.calls[0].request
         url = request.url
         method = request.method
         assert "{}/registrations/{}/query?".format(mock_dps_target['entity'], enrollment_id) in url
         assert method == 'POST'
+        if top:
+            assert len(result) == top
+
+    @pytest.fixture(params=[200])
+    def pagingserviceclient(
+        self, mocked_response, fixture_gdcs, fixture_dps_sas, patch_certificate_open, request
+    ):
+        mocked_response.assert_all_requests_are_fired = False
+        mocked_response.add(
+            method=responses.POST,
+            url="https://{}/registrations/{}/query?".format(mock_dps_target['entity'], enrollment_id),
+            body=json.dumps([
+                generate_registration_state_show(),
+                generate_registration_state_show(),
+                generate_registration_state_show(),
+                generate_registration_state_show()
+            ]),
+            headers={"x-ms-continuation": "continuation_token123"},
+            status=request.param,
+            content_type="application/json",
+            match_querystring=False
+        )
+        mocked_response.add(
+            method=responses.POST,
+            url="https://{}/registrations/{}/query?".format(mock_dps_target['entity'], enrollment_id),
+            body=json.dumps([
+                generate_registration_state_show(),
+                generate_registration_state_show(),
+                generate_registration_state_show(),
+            ]),
+            status=request.param,
+            content_type="application/json",
+            match_querystring=False
+        )
+        yield mocked_response
+
+    @pytest.mark.parametrize("top", [None, 3, 6])
+    def test_registration_list_paging(self, pagingserviceclient, fixture_cmd, top):
+        result = subject.iot_dps_registration_list(
+            cmd=fixture_cmd,
+            dps_name=mock_dps_target['entity'],
+            enrollment_id=enrollment_id,
+            resource_group_name=resource_group,
+            top=top
+        )
+        if top:
+            assert len(result) == top
+            assert len(pagingserviceclient.calls) == (1 + top // 4)
+        else:
+            assert len(pagingserviceclient.calls) == 2
 
     def test_registration_list_error(self, fixture_cmd):
         with pytest.raises(CLIError):
@@ -748,7 +814,7 @@ class TestRegistrationDelete():
         mocked_response.add(
             method=responses.DELETE,
             url="https://{}/registrations/{}".format(mock_dps_target['entity'], registration_id),
-            body='{}',
+            body=None,
             status=request.param,
             content_type="application/json",
             match_querystring=False

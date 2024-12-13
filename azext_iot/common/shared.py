@@ -232,6 +232,7 @@ class RenewKeyType(Enum):
     primary = KeyType.primary.value
     secondary = KeyType.secondary.value
     swap = "swap"
+    both = "both"
 
 
 class IoTHubStateType(Enum):
@@ -307,6 +308,4 @@ class SHAHashVersions(Enum):
     """
     Supported SHA types for generating the certificate thumbprint.
     """
-
-    SHA1 = 1
     SHA256 = 256

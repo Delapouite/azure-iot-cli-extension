@@ -99,7 +99,7 @@ class TestEdgeHierarchyCreateArgs:
         mocked_response.add(
             method=responses.DELETE,
             url=re.compile(r"{}/dev\d+".format(devices_url)),
-            body="{}",
+            body=None,
             status=204,
             content_type="application/json",
             match_querystring=False,
@@ -445,7 +445,7 @@ class TestHierarchyCreateConfig:
         mocked_response.add(
             method=responses.DELETE,
             url=re.compile(r"{}/device_\d+".format(devices_url)),
-            body="{}",
+            body=None,
             status=204,
             content_type="application/json",
             match_querystring=False,
@@ -622,7 +622,6 @@ class TestHierarchyCreateConfig:
             root_cert = create_self_signed_certificate(
                 subject=EDGE_ROOT_CERTIFICATE_SUBJECT,
                 key_size=4096,
-                sha_version=256,
                 v3_extensions=True
             )
             write_content_to_file(
@@ -717,7 +716,6 @@ class TestEdgeHierarchyConfigFunctions:
         root_cert = create_self_signed_certificate(
             subject=EDGE_ROOT_CERTIFICATE_SUBJECT,
             key_size=4096,
-            sha_version=256,
             v3_extensions=True
         )
         write_content_to_file(
@@ -1252,7 +1250,7 @@ class TestDevicesDelete:
         mocked_response.add(
             method=responses.DELETE,
             url=re.compile(r"{}/device_\d+".format(devices_url)),
-            body="{}",
+            body=None,
             status=204,
             content_type="application/json",
             match_querystring=False,

@@ -7,7 +7,7 @@
 
 import os
 
-VERSION = "0.24.0"
+VERSION = "0.25.0"
 EXTENSION_NAME = "azure-iot"
 EXTENSION_ROOT = os.path.dirname(os.path.abspath(__file__))
 EXTENSION_CONFIG_ROOT_KEY = "iotext"
@@ -43,6 +43,10 @@ DIGITALTWINS_RESOURCE_ID = "https://digitaltwins.azure.net"
 IOTDPS_PROVISIONING_HOST = "global.azure-devices-provisioning.net"
 DEVICETWIN_POLLING_INTERVAL_SEC = 10
 DEVICETWIN_MONITOR_TIME_SEC = 15
+IOTHUB_THROTTLE_MAX_TRIES = 3
+IOTHUB_THROTTLE_SLEEP_SEC = 20
+THROTTLE_HTTP_STATUS_CODE = 429
+IOTHUB_RENEW_KEY_BATCH_SIZE = 100
 # (Lib name, minimum version (including), maximum version (excluding))
 EVENT_LIB = ("uamqp", "1.2", "1.3")
 PNP_DTDLV2_COMPONENT_MARKER = "__t"

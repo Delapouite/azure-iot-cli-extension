@@ -9,6 +9,7 @@ from typing import Optional, List
 import os
 
 import pytest
+from azure.cli.core.azclierror import CLIInternalError
 from knack.log import get_logger
 
 from azext_iot.common.embedded_cli import EmbeddedCLI
@@ -46,7 +47,7 @@ def assign_iot_hub_dataplane_rbac_role(hub_results):
             user = account["user"]
 
             if user["name"] is None:
-                raise Exception("User not found")
+                raise CLIInternalError("User not found")  # pylint: disable=broad-except
 
             assign_role_assignment(
                 assignee=user["name"],
@@ -114,6 +115,7 @@ def setup_hub_controlplane_states(
     provisioned_storage = provisioned_iot_hubs_with_storage_user_module[0]["storage"]
     storage_cstring = provisioned_storage["connectionString"]
     storage_container = provisioned_storage["container"]["name"]
+    storage_endpoint_uri = provisioned_storage["storage"]["primaryEndpoints"]["blob"]
 
     cosmosdb_container_name = provisioned_cosmos_db_module["container"]["name"]
     cosmosdb_database_name = provisioned_cosmos_db_module["database"]["name"]
@@ -176,7 +178,14 @@ def setup_hub_controlplane_states(
 
     cli.invoke(
         f"iot hub message-endpoint create storage-container --en storagecontainer-key -g {hub_rg} -n {hub_name} -c "
-        f"{storage_cstring} --container {storage_container}  -b 350 -w 250 --encoding json")
+        f"{storage_cstring} --container {storage_container}  -b 350 -w 250 --encoding json"
+    )
+
+    cli.invoke(
+        f"iot hub message-endpoint create storage-container --en storagecontainer-{suffix} -g {hub_rg} -n {hub_name} "
+        f"--identity {user_identity_parameter} --endpoint-uri {storage_endpoint_uri} --container {storage_container} "
+        "-b 350 -w 250 --encoding json"
+    )
 
     cli.invoke(
         f"iot hub message-endpoint create cosmosdb-container --en cosmosdb-key -g {hub_rg} -n {hub_name} --container "
@@ -676,7 +685,7 @@ def _cosmos_db_provisioner():
     database_name = generate_hub_depenency_id()
     collection_name = generate_hub_depenency_id()
     partition_key_path = "/test"
-    location = "eastus"
+    location = "westus"
     cosmos_obj = cli.invoke(
         "cosmosdb create --name {} --resource-group {} --locations regionName={} failoverPriority=0".format(
             account_name, RG, location
@@ -698,6 +707,7 @@ def _cosmos_db_provisioner():
         "cosmosdb": cosmos_obj,
         "database": database_obj,
         "container": container_obj,
+        "partitionKey": partition_key_path,
         "connectionString": _cosmos_db_get_cstring(account_name)
     }
 

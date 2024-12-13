@@ -46,7 +46,7 @@ if not PACKAGE_NAME:
 DEPENDENCIES = [
     "azure-core>=1.24.0,<2.0.0",
     "azure-mgmt-core>=1.3.0,<2.0.0",
-    "azure-identity>=1.6.1,<2.0.0",
+    "azure-identity>=1.6.1,<1.18.0",
     "azure-storage-blob>=12.14.0,<13.0.0",
     "msrest>=0.6.21",
     "msrestazure>=0.6.3,<2.0.0",
@@ -58,7 +58,7 @@ DEPENDENCIES = [
     "treelib~=1.6",
     "packaging"
 ]
-EXTRAS = {"uamqp": ["uamqp~=1.2"]}
+EXTRAS = {"uamqp": ["uamqp>=1.2,<=1.6.8"]}
 
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
@@ -70,6 +70,8 @@ CLASSIFIERS = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "License :: OSI Approved :: MIT License",
 ]
 

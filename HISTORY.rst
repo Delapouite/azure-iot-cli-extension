@@ -4,13 +4,38 @@ Release History
 ===============
 
 
+0.25.0
++++++++++++++++
+
+**IoT Hub updates**
+
+* Fix `az iot hub message-endpoint create` to correctly pass the endpoint subscription when provided.
+
+* Deprecate use of SHA1 hashes for certificate thumbprints. SHA256 hashes will be used for all certificate thumbprints.
+
+* Addition of bulk key regeneration for `az iot hub device-identity renew-key` and `az iot hub module-identity renew-key`.
+
+* Fix for `az iot hub monitor-events` when the IoT Hub has no partition Id's populated.
+
+**DPS updates**
+
+* Fix for `az iot dps enrollement-group registration list` to support paging.
+
+
 0.24.0
 +++++++++++++++
 
+**General updates**
+
+* Updated the minimum core CLI version to 2.46.0
 
 **IoT Product**
 
 * Removal of `az iot product`.
+
+**IoT Hub updates**
+
+* Fix for `az iot hub state export` to support storage account endpoints with system-assigned identity.
 
 
 0.23.1
@@ -487,7 +512,7 @@ Other notable changes, which are not affected by API versions, include:
 **Device Update**
 
 * Introducing the **in preview** Azure Device Update for IoT Hub root command group `az iot device-update`.
-  To learn more about the service visit https://docs.microsoft.com/en-us/azure/iot-hub-device-update/.
+  To learn more about the service visit https://learn.microsoft.com/en-us/azure/iot-hub-device-update/.
 
   - This command group is behind a feature flag environment variable. Set `IOT_CLI_ADU_ENABLED` to any value
     to activate the command group.
@@ -799,7 +824,7 @@ Other notable changes, which are not affected by API versions, include:
     * az iot device send-d2c-message
     * az iot device simulate
 
-For more information about IoT Hub support for AAD visit: https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-dev-guide-azure-ad-rbac
+For more information about IoT Hub support for AAD visit: https://learn.microsoft.com/en-us/azure/iot-hub/iot-hub-dev-guide-azure-ad-rbac
 
 **Azure Digital Twins updates**
 

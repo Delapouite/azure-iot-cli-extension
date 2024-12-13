@@ -23,7 +23,7 @@ class DevicesOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: Version of the Api. Constant value: "2021-04-12".
+    :ivar api_version: Version of the Api. Constant value: "2024-03-31".
     """
 
     models = models
@@ -33,7 +33,7 @@ class DevicesOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2021-04-12"
+        self.api_version = "2024-03-31"
 
         self.config = config
 
@@ -42,9 +42,7 @@ class DevicesOperations(object):
         """Gets the identities of multiple devices from the IoT Hub identity
         registry. Not recommended. Use the IoT Hub query API to retrieve device
         twin and device identity information. See
-        https://docs.microsoft.com/en-us/rest/api/iothub/service/queryiothub
-        and
-        https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-devguide-query-language
+        https://learn.microsoft.com/en-us/azure/iot-hub/iot-hub-devguide-query-language
         for more information.
 
         :param top: The maximum number of device identities returned by the
@@ -65,9 +63,9 @@ class DevicesOperations(object):
 
         # Construct parameters
         query_parameters = {}
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
         if top is not None:
             query_parameters['top'] = self._serialize.query("top", top, 'int')
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -112,8 +110,7 @@ class DevicesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: Device or ClientRawResponse if raw=true
-        :rtype: ~service.models.Device or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype: ~service.models.Device or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -177,8 +174,7 @@ class DevicesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: Device or ClientRawResponse if raw=true
-        :rtype: ~service.models.Device or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype: ~service.models.Device or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -292,7 +288,7 @@ class DevicesOperations(object):
     def get_twin(
             self, id, custom_headers=None, raw=False, **operation_config):
         """Gets the device twin. See
-        https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-device-twins
+        https://learn.microsoft.com/azure/iot-hub/iot-hub-devguide-device-twins
         for more information.
 
         :param id: The unique identifier of the device.
@@ -303,8 +299,7 @@ class DevicesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: Twin or ClientRawResponse if raw=true
-        :rtype: ~service.models.Twin or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype: ~service.models.Twin or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -352,7 +347,7 @@ class DevicesOperations(object):
     def replace_twin(
             self, id, device_twin_info, if_match=None, custom_headers=None, raw=False, **operation_config):
         """Replaces the tags and desired properties of a device twin. See
-        https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-device-twins
+        https://learn.microsoft.com/azure/iot-hub/iot-hub-devguide-device-twins
         for more information.
 
         :param id: The unique identifier of the device.
@@ -370,8 +365,7 @@ class DevicesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: Twin or ClientRawResponse if raw=true
-        :rtype: ~service.models.Twin or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype: ~service.models.Twin or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -426,7 +420,7 @@ class DevicesOperations(object):
     def update_twin(
             self, id, device_twin_info, if_match=None, custom_headers=None, raw=False, **operation_config):
         """Updates the tags and desired properties of a device twin. See
-        https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-device-twins
+        https://learn.microsoft.com/azure/iot-hub/iot-hub-devguide-device-twins
         for more information.
 
         :param id: The unique identifier of the device.
@@ -444,8 +438,7 @@ class DevicesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: Twin or ClientRawResponse if raw=true
-        :rtype: ~service.models.Twin or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype: ~service.models.Twin or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -499,7 +492,7 @@ class DevicesOperations(object):
     def invoke_method(
             self, device_id, direct_method_request, custom_headers=None, raw=False, **operation_config):
         """Invokes a direct method on a device. See
-        https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-direct-methods
+        https://learn.microsoft.com/azure/iot-hub/iot-hub-devguide-direct-methods
         for more information.
 
         :param device_id: The unique identifier of the device.

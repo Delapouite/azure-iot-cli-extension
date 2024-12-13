@@ -230,12 +230,19 @@ helps[
     "iot hub device-identity renew-key"
 ] = """
     type: command
-    short-summary: Renew target keys of an IoT Hub device with sas authentication.
+    short-summary: Renew target keys of IoT Hub devices with sas authentication.
+    long-summary: |
+                  Currently etags and key type `swap` are not supported for bulk key regeneration.
+                  Bulk Key regeneration will yeild a different output format from single device key regeneration.
     examples:
       - name: Renew the primary key.
         text: az iot hub device-identity renew-key -d {device_id} -n {iothub_name} --kt primary
       - name: Swap the primary and secondary keys.
         text: az iot hub device-identity renew-key -d {device_id} -n {iothub_name} --kt swap
+      - name: Renew the secondary key for two devices and their modules.
+        text: az iot hub device-identity renew-key -d {device_id} {device_id} -n {iothub_name} --kt secondary --include-modules
+      - name: Renew the both keys for all devices within the hub.
+        text: az iot hub device-identity renew-key -d * -n {iothub_name} --kt both
 """
 
 helps[
@@ -558,12 +565,19 @@ helps[
     "iot hub module-identity renew-key"
 ] = """
     type: command
-    short-summary: Renew target keys of an IoT Hub device module with sas authentication.
+    short-summary: Renew target keys of IoT Hub device modules with sas authentication.
+    long-summary: |
+                  Currently etags and key type `swap` are not supported for bulk key regeneration.
+                  Bulk Key regeneration will yeild a different output format from single module key regeneration.
     examples:
       - name: Renew the primary key.
         text: az iot hub module-identity renew-key -m {module_name} -d {device_id} -n {iothub_name} --kt primary
       - name: Swap the primary and secondary keys.
         text: az iot hub module-identity renew-key -m {module_name} -d {device_id} -n {iothub_name} --kt swap
+      - name: Renew the secondary key for two modules.
+        text: az iot hub module-identity renew-key -m {module_name} {module_name} -d {device_id} -n {iothub_name} --kt secondary
+      - name: Renew both keys for all modules in the device.
+        text: az iot hub module-identity renew-key -m * -d {device_id} -n {iothub_name} --kt both
 """
 
 helps[
@@ -712,7 +726,7 @@ helps[
     type: command
     short-summary: Query an IoT Hub using a powerful SQL-like language.
     long-summary: Retrieve information regarding device and module twins, jobs and message routing.
-                  See https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-query-language
+                  See https://learn.microsoft.com/azure/iot-hub/iot-hub-devguide-query-language
                   for more information.
     examples:
     - name: Query all device twin data in an Azure IoT Hub.
@@ -869,7 +883,7 @@ helps[
                    all from the cloud.
 
                    Read more about Azure IoT Edge here:
-                   https://docs.microsoft.com/en-us/azure/iot-edge/
+                   https://learn.microsoft.com/en-us/azure/iot-edge/
 """
 
 helps[
@@ -1115,7 +1129,7 @@ helps[
       text: >
         az iot dps enrollment create -g {resource_group_name} --dps-name {dps_name}
         --enrollment-id {enrollment_id} --attestation-type tpm --allocation-policy hashed
-        --endorsement-key 14963E8F3BA5B3984110B3C1CA8E8B89 --iot-hubs "{iot_hub_host_name1} {iot_hub_host_name2}"
+        --endorsement-key 14963E8F3BA5B3984110B3C1CA8E8B89 --iot-hubs {iot_hub_host_name1} {iot_hub_host_name2}
     - name: Create an enrollment 'MyEnrollment' with custom allocation policy,
       text: >
         az iot dps enrollment create -g {resource_group_name} --dps-name {dps_name}
@@ -1162,7 +1176,7 @@ helps[
       text: >
         az iot dps enrollment update -g {resource_group_name} --dps-name {dps_name}
         --enrollment-id {enrollment_id} --allocation-policy geolatency
-        --etag AAAAAAAAAAA= --iot-hubs "{iot_hub_host_name1} {iot_hub_host_name2} {iot_hub_host_name3}"
+        --etag AAAAAAAAAAA= --iot-hubs {iot_hub_host_name1} {iot_hub_host_name2} {iot_hub_host_name3}
     - name: Update enrollment '{enrollment_id}' in the Azure IoT Device Provisioning Service '{dps_name}'
             in the resource group '{resource_group_name}' with
             initial twin properties '{"location":{"region":"USA"}}', initial twin tags '{"version":"2"}',

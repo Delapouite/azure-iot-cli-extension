@@ -23,7 +23,7 @@ class ModulesOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: Version of the Api. Constant value: "2021-04-12".
+    :ivar api_version: Version of the Api. Constant value: "2024-03-31".
     """
 
     models = models
@@ -33,14 +33,14 @@ class ModulesOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2021-04-12"
+        self.api_version = "2024-03-31"
 
         self.config = config
 
     def get_twin(
             self, id, mid, custom_headers=None, raw=False, **operation_config):
         """Gets the module twin. See
-        https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-device-twins
+        https://learn.microsoft.com/azure/iot-hub/iot-hub-devguide-device-twins
         for more information.
 
         :param id: The unique identifier of the device.
@@ -53,8 +53,7 @@ class ModulesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: Twin or ClientRawResponse if raw=true
-        :rtype: ~service.models.Twin or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype: ~service.models.Twin or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -103,7 +102,7 @@ class ModulesOperations(object):
     def replace_twin(
             self, id, mid, device_twin_info, if_match=None, custom_headers=None, raw=False, **operation_config):
         """Replaces the tags and desired properties of a module twin. See
-        https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-device-twins
+        https://learn.microsoft.com/azure/iot-hub/iot-hub-devguide-device-twins
         for more information.
 
         :param id: The unique identifier of the device.
@@ -123,8 +122,7 @@ class ModulesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: Twin or ClientRawResponse if raw=true
-        :rtype: ~service.models.Twin or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype: ~service.models.Twin or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -180,7 +178,7 @@ class ModulesOperations(object):
     def update_twin(
             self, id, mid, device_twin_info, if_match=None, custom_headers=None, raw=False, **operation_config):
         """Updates the tags and desired properties of a module twin. See
-        https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-device-twins
+        https://learn.microsoft.com/azure/iot-hub/iot-hub-devguide-device-twins
         for more information.
 
         :param id: The unique identifier of the device.
@@ -200,8 +198,7 @@ class ModulesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: Twin or ClientRawResponse if raw=true
-        :rtype: ~service.models.Twin or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype: ~service.models.Twin or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -325,8 +322,7 @@ class ModulesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: Module or ClientRawResponse if raw=true
-        :rtype: ~service.models.Module or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype: ~service.models.Module or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -393,8 +389,7 @@ class ModulesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: Module or ClientRawResponse if raw=true
-        :rtype: ~service.models.Module or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype: ~service.models.Module or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -512,7 +507,7 @@ class ModulesOperations(object):
     def invoke_method(
             self, device_id, module_id, direct_method_request, custom_headers=None, raw=False, **operation_config):
         """Invokes a direct method on a module of a device. See
-        https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-direct-methods
+        https://learn.microsoft.com/azure/iot-hub/iot-hub-devguide-direct-methods
         for more information.
 
         :param device_id: The unique identifier of the device.

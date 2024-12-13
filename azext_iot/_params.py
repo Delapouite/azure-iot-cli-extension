@@ -46,7 +46,7 @@ dps_auth_type_dataplane_param_type = CLIArgumentType(
     arg_group="Access Control",
     help="Indicates whether the operation should auto-derive a policy key or use the current Azure AD session. "
     "If the authentication type is login and the resource hostname is provided, resource lookup will be skipped unless needed."
-    "You can configure the default using `az configure --defaults iotdps-data-auth-type=<auth-type-value>`",
+    "You can configure the default using `az configure --defaults iotdps-data-auth-type={auth-type-value}`",
     configured_default="iotdps-data-auth-type",
 )
 
@@ -58,7 +58,7 @@ hub_auth_type_dataplane_param_type = CLIArgumentType(
     arg_group="Access Control",
     help="Indicates whether the operation should auto-derive a policy key or use the current Azure AD session. "
     "If the authentication type is login and the resource hostname is provided, resource lookup will be skipped unless needed."
-    "You can configure the default using `az configure --defaults iothub-data-auth-type=<auth-type-value>`",
+    "You can configure the default using `az configure --defaults iothub-data-auth-type={auth-type-value}`",
     configured_default="iothub-data-auth-type",
 )
 
@@ -467,6 +467,31 @@ def load_arguments(self, _):
             arg_type=get_enum_type(RenewKeyType),
             help="Target key type to regenerate.",
         )
+        context.argument(
+            "device_ids",
+            options_list=["--device-id", "-d"],
+            help="Space seperated list of target Device Ids. Use `*` for all devices.",
+            nargs="+",
+            action="extend"
+        )
+        context.argument(
+            "include_modules",
+            options_list=["--include-modules", "--im"],
+            help="Flag to include device modules during key regeneration.",
+            arg_type=get_three_state_flag()
+        )
+        context.argument(
+            "etag",
+            options_list=["--etag", "-e"],
+            help="Etag or entity tag corresponding to the last state of the resource. "
+            "If no etag is provided the value '*' is used. This arguement only applies to `swap`.",
+        )
+        context.argument(
+            "no_progress",
+            options_list=["--no-progress"],
+            arg_type=get_three_state_flag(),
+            help="Hide the progress bar for bulk key regeneration.",
+        )
 
     with self.argument_context("iot hub device-identity export") as context:
         context.argument(
@@ -613,6 +638,25 @@ def load_arguments(self, _):
             options_list=["--key-type", "--kt"],
             arg_type=get_enum_type(RenewKeyType),
             help="Target key type to regenerate.",
+        )
+        context.argument(
+            "module_ids",
+            options_list=["--module-id", "-m"],
+            help="Space seperated list of target Module Ids. Use `*` for all modules.",
+            nargs="+",
+            action="extend"
+        )
+        context.argument(
+            "etag",
+            options_list=["--etag", "-e"],
+            help="Etag or entity tag corresponding to the last state of the resource. "
+            "If no etag is provided the value '*' is used. This arguement only applies to `swap`.",
+        )
+        context.argument(
+            "no_progress",
+            options_list=["--no-progress"],
+            arg_type=get_three_state_flag(),
+            help="Hide the progress bar for bulk key regeneration.",
         )
 
     with self.argument_context("iot hub distributed-tracing update") as context:
@@ -1006,6 +1050,8 @@ def load_arguments(self, _):
             options_list=["--iot-hubs", "--ih"],
             help="Host name of target IoT Hub associated with the allocation policy. Use space-separated "
             "list for multiple IoT Hubs.",
+            nargs="+",
+            action="extend",
             arg_group="Allocation Policy"
         )
         context.argument(
